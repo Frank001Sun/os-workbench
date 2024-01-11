@@ -90,7 +90,7 @@ void draw_bmp()
   // h = 16;
   w = info.width;
   h = info.height;
-  printf("w = %d, h = %d, bmp_head_len = %d\n", w, h, bmp_head_len);
+  // printf("w = %d, h = %d, bmp_head_len = %d\n", w, h, bmp_head_len);
   const unsigned char *bmp_start_pixel = __Mascaloona_Bliss_4_3__640x480__bmp + bmp_head_len;
   for (int y = 0; y < h; y++)
   {
