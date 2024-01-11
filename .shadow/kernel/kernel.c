@@ -74,8 +74,8 @@ static void draw_part_bmp(int x, int y, int w, int h, const unsigned char *bmp_p
       .pixels = &pixel,
   };
   // pixel = 0xffffff;
-  pixel = (*bmp_pixel << 16) + (*(bmp_pixel + 1) << 8) + *(bmp_pixel + 2);
-  // pixel = ((*(bmp_pixel + 2)) << 16) + ((*(bmp_pixel + 1)) << 8) + *(bmp_pixel);
+  // pixel = (*bmp_pixel << 16) + (*(bmp_pixel + 1) << 8) + *(bmp_pixel + 2);
+  pixel = (*(bmp_pixel + 2) << 16) + (*(bmp_pixel + 1) << 8) + *bmp_pixel;
   // printf("%X ", pixel);
 
   ioe_write(AM_GPU_FBDRAW, &event);
