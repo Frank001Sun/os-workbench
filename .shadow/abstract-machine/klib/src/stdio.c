@@ -76,7 +76,7 @@ int printf(const char *fmt, ...) {
           }
           index--;
         }
-        putstr("0x");
+        putstr("0X");
         putstr(&number_buffer[index + 1]);
         char_transmitted += strlen(&number_buffer[index + 1]);
         break;
