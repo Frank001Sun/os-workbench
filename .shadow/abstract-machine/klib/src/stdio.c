@@ -59,6 +59,27 @@ int printf(const char *fmt, ...) {
         putstr(&number_buffer[index + 1]);
         char_transmitted += strlen(&number_buffer[index + 1]);
         break;
+      case 'X': /* 16-bit */
+        i = va_arg(ap, int);
+        index = sizeof(number_buffer) - 2;
+        number_buffer[index + 1] = '\0';
+        for (; i; i /= 16)
+        {
+          int v = i % 16;
+          if (v >= 10)
+          {
+            number_buffer[index] = v - 10 + 'A';
+          }
+          else
+          {
+            number_buffer[index] = v + '0';
+          }
+          index--;
+        }
+        putstr("0x");
+        putstr(&number_buffer[index + 1]);
+        char_transmitted += strlen(&number_buffer[index + 1]);
+        break;
       case 'c': /* char */
         /* need a cast here since va_arg only
            takes fully promoted types */
