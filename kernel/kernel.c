@@ -3,6 +3,9 @@
 #include <klib.h>
 #include <klib-macros.h>
 
+#include <string.h>
+#include "Mascaloona_Bliss_4_3__640x480__bmp.c"
+
 #define SIDE 16
 
 static int w, h;  // Screen size
@@ -22,6 +25,11 @@ void print_key() {
     puts("Key pressed: ");
     puts(key_names[event.keycode]);
     puts("\n");
+    if (strncmp(key_names[event.keycode], "ESCAPE", 6) == 0)
+    {
+      // printf("keycode = %d, ESC\n", event.keycode);
+      halt(0);
+    }
   }
 }
 
@@ -52,6 +60,47 @@ void splash() {
   }
 }
 
+static void draw_part_bmp(int x, int y, int w, int h, const unsigned char *bmp_pixel)
+{
+  // uint32_t pixels[w * h]; // WARNING: large stack-allocated memory
+  uint32_t pixel;
+  AM_GPU_FBDRAW_T event = {
+      .x = x,
+      .y = y,
+      .w = w,
+      .h = h,
+      .sync = 1,
+      // .pixels = pixels,
+      .pixels = &pixel,
+  };
+  // pixel = 0xffffff;
+  // pixel = (*bmp_pixel << 16) + (*(bmp_pixel + 1) << 8) + *(bmp_pixel + 2);
+  pixel = (*(bmp_pixel + 2) << 16) + (*(bmp_pixel + 1) << 8) + *bmp_pixel;
+  // printf("%X ", pixel);
+
+  ioe_write(AM_GPU_FBDRAW, &event);
+}
+
+void draw_bmp()
+{
+  const int bmp_head_len = __Mascaloona_Bliss_4_3__640x480__bmp_len - bmp_h * bmp_w * bmp_bits / 8;
+  AM_GPU_CONFIG_T info = {0};
+  ioe_read(AM_GPU_CONFIG, &info);
+  // w = 16;
+  // h = 16;
+  w = info.width;
+  h = info.height;
+  // printf("w = %d, h = %d, bmp_head_len = %d\n", w, h, bmp_head_len);
+  const unsigned char *bmp_start_pixel = __Mascaloona_Bliss_4_3__640x480__bmp + bmp_head_len;
+  for (int y = 0; y < h; y++)
+  {
+    for (int x = 0; x < w; x++)
+    {
+      draw_part_bmp(x, h - y - 1, 1, 1, bmp_start_pixel + (y * w + x) * 3);
+    }
+  }
+}
+
 // Operating system is a C program!
 int main(const char *args) {
   ioe_init();
@@ -60,7 +109,8 @@ int main(const char *args) {
   puts(args);  // make run mainargs=xxx
   puts("\"\n");
 
-  splash();
+  draw_bmp();
+  // splash();
 
   puts("Press any key to see its key code...\n");
   while (1) {

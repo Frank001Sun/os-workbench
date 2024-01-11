@@ -4,7 +4,7 @@
 #include <klib-macros.h>
 
 #include <string.h>
-#include "my_bmp.c"
+#include "Mascaloona_Bliss_4_3__640x480__bmp.c"
 
 #define SIDE 16
 
